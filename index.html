@@ -1,79 +1,138 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>BNB Smart Chain</title>
+  <title>BNB Smart Chain Mini Game</title>
+
   <style>
+    * {
+      box-sizing: border-box;
+    }
+
     body {
       margin: 0;
-      padding: 25px;
-      background: #0b0b0b;
-      color: white;
       font-family: Arial, sans-serif;
-    }
-
-    .header {
+      background: #f5f5f5;
       text-align: center;
-      margin-bottom: 30px;
     }
 
-    .logo {
-      font-size: 55px;
-      color: #f3ba2f;
+    .container {
+      max-width: 420px;
+      margin: 0 auto;
+      padding: 25px 18px;
     }
 
     h1 {
-      font-size: 24px;
+      margin-bottom: 8px;
     }
 
-    .card {
-      background: #181818;
-      padding: 22px;
-      margin: 15px 0;
+    .subtitle {
+      color: #666;
+      margin-bottom: 25px;
+    }
+
+    .balance {
+      background: white;
       border-radius: 18px;
+      padding: 22px;
+      margin-bottom: 20px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.08);
     }
 
-    .title {
-      font-size: 18px;
-      margin-bottom: 12px;
-    }
-
-    .value {
-      font-size: 28px;
+    .points {
+      font-size: 38px;
       font-weight: bold;
-    }
-
-    .bnb {
-      color: #f3ba2f;
-    }
-
-    .network {
-      color: #999;
       margin-top: 8px;
-      font-size: 14px;
+    }
+
+    .play-button {
+      width: 100%;
+      padding: 18px;
+      border: none;
+      border-radius: 15px;
+      font-size: 22px;
+      font-weight: bold;
+      cursor: pointer;
+      background: #f0b90b;
+      color: #111;
+    }
+
+    .play-button:active {
+      transform: scale(0.97);
+    }
+
+    .info {
+      margin-top: 20px;
+      background: white;
+      padding: 18px;
+      border-radius: 15px;
+      color: #555;
+    }
+
+    .reset {
+      margin-top: 15px;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
     }
   </style>
 </head>
 
 <body>
 
-  <div class="header">
-    <div class="logo">◆</div>
-    <h1>BNB Smart Chain</h1>
+  <div class="container">
+
+    <h1>🟡 BNB Smart Chain</h1>
+
+    <div class="subtitle">
+      Virtual Points Mini Game
+    </div>
+
+    <div class="balance">
+      <div>🪙 Your Points</div>
+
+      <div class="points" id="points">
+        0
+      </div>
+    </div>
+
+    <button class="play-button" onclick="playGame()">
+      🎮 PLAY GAME
+    </button>
+
+    <div class="info">
+      <p>প্রতি Play করলে <b>+1 Point</b> পাবেন।</p>
+
+      <p>
+        এগুলো শুধুমাত্র গেমের Virtual Points।
+      </p>
+
+      <button class="reset" onclick="resetGame()">
+        Reset Points
+      </button>
+    </div>
+
   </div>
 
-  <div class="card">
-    <div class="title">💰 Balance</div>
-    <div class="value">0.00</div>
-    <div class="network">Your Balance</div>
-  </div>
+  <script>
 
-  <div class="card">
-    <div class="title">🟡 BNB</div>
-    <div class="value bnb">0.00 BNB</div>
-    <div class="network">BNB Smart Chain (BEP-20)</div>
-  </div>
+    let points = Number(localStorage.getItem("gamePoints")) || 0;
 
-</body>
-  </html>
+    function updatePoints() {
+      document.getElementById("points").textContent = points;
+    }
+
+    function playGame() {
+      points++;
+
+      localStorage.setItem("gamePoints", points);
+
+      updatePoints();
+    }
+
+    function resetGame() {
+      points = 0;
+
+         

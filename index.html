@@ -1,39 +1,364 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport"
+      content="width=device-width,initial-scale=1.0">
 
-<html lang="en">    }
+<title>BNB Smart Chain</title>
 
-    .play-button:active {
-      transform: scale(0.97);
-    }
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
 
-    .info {
-      margin-top: 20px;
-      background: white;
-      padding: 18px;
-      border-radius: 15px;
-      color: #555;
-    }
+<style>
 
-    .reset {
-      margin-top: 15px;
-      padding: 10px 20px;
-      border: none;
-      border-radius: 10px;
-      cursor: pointer;
-    }
-  </style>
+*{
+    box-sizing:border-box;
+}
+
+body{
+    margin:0;
+    font-family:Arial,sans-serif;
+    color:white;
+    background:
+      radial-gradient(circle at 80% 50%,#12352e 0%,transparent 35%),
+      linear-gradient(135deg,#061b29,#07151c);
+    min-height:100vh;
+    padding:18px;
+}
+
+.top{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:18px;
+}
+
+.close{
+    background:#07141d;
+    border:0;
+    color:white;
+    padding:13px 20px;
+    border-radius:30px;
+    font-size:18px;
+}
+
+.menu{
+    background:#07141d;
+    border:0;
+    color:white;
+    padding:13px 18px;
+    border-radius:30px;
+    font-size:24px;
+}
+
+.stats{
+    border:1px solid #29414d;
+    background:rgba(30,48,58,.7);
+    border-radius:30px;
+    padding:25px;
+}
+
+.stats-row{
+    display:flex;
+    justify-content:space-between;
+}
+
+.label{
+    color:#9aa6ac;
+    font-size:14px;
+}
+
+.rate{
+    font-size:25px;
+    font-weight:bold;
+    margin-top:8px;
+}
+
+.rank{
+    font-size:22px;
+    font-weight:bold;
+    margin-top:8px;
+}
+
+.boost{
+    border-top:1px solid #334650;
+    margin-top:20px;
+    padding-top:20px;
+    color:#a8aeb3;
+}
+
+.wallet{
+    text-align:center;
+    margin-top:45px;
+}
+
+.wallet-name{
+    display:inline-block;
+    padding:13px 30px;
+    border-radius:30px;
+    background:#183d38;
+    border:1px solid #3e7166;
+    font-size:20px;
+    font-weight:bold;
+}
+
+.balance{
+    color:#fff;
+    font-size:20px;
+    margin-top:8px;
+}
+
+.coin{
+    width:230px;
+    height:230px;
+    margin:60px auto 20px;
+    border-radius:50%;
+    background:linear-gradient(145deg,#ffd75a,#b67800);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:70px;
+    box-shadow:0 0 45px rgba(255,190,30,.25);
+}
+
+.earning{
+    text-align:center;
+    font-size:52px;
+    font-weight:bold;
+    margin:20px 0 35px;
+}
+
+.claim{
+    width:100%;
+    padding:22px;
+    border:0;
+    border-radius:25px;
+    background:#1189df;
+    color:white;
+    font-size:25px;
+    font-weight:bold;
+}
+
+.claim:active{
+    transform:scale(.98);
+}
+
+.nav{
+    position:fixed;
+    bottom:0;
+    left:0;
+    right:0;
+    display:flex;
+    justify-content:space-around;
+    background:rgba(8,23,30,.97);
+    padding:12px 5px;
+    border-top:1px solid #263b44;
+}
+
+.nav button{
+    background:none;
+    border:0;
+    color:#aaa;
+    font-size:12px;
+}
+
+.nav span{
+    display:block;
+    font-size:25px;
+    margin-bottom:4px;
+}
+
+.nav .active{
+    color:#1599ff;
+}
+
+</style>
 </head>
 
 <body>
 
-  <div class="container">
+<div class="top">
 
-    <h1>🟡 BNB Smart Chain</h1>
+    <button class="close">✕ Close</button>
 
-    <div class="subtitle">
-      Virtual Points Mini Game
+    <button class="menu">⋮</button>
+
+</div>
+
+
+<div class="stats">
+
+    <div class="stats-row">
+
+        <div>
+            <div class="label">MINING RATE</div>
+            <div class="rate">
+                🔥 <span id="rate">0.2067</span> P/s
+            </div>
+        </div>
+
+        <div style="text-align:right">
+
+            <div class="label">CURRENT RANK</div>
+
+            <div class="rank">
+                Level <span id="level">1</span> 👑
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <div class="boost">
+
+        ⚡ Boost Bank
+
+        <span style="float:right">
+            <b>0h / 12h</b>
+        </span>
+
+    </div>
+
+</div>
+
+
+<div class="wallet">
+
+    <div class="wallet-name">
+        👛 Wallet: <span id="wallet">0.0000</span> PTC
     </div>
 
     <div class="balance">
-      <div>🪙 Your Points</div>
+        ~ $0.00 USD
+    </div>
 
-      <div class="points" id="points">
+</div>
+
+
+<div class="coin">
+    🪙
+</div>
+
+
+<div class="earning">
+
+    +<span id="earning">0.0000</span>
+
+</div>
+
+
+<button class="claim" onclick="claim()">
+    Claim
+</button>
+
+
+<div style="height:100px"></div>
+
+
+<div class="nav">
+
+    <button class="active" onclick="page('mine')">
+        <span>🏠</span>
+        Mine
+    </button>
+
+    <button onclick="page('quests')">
+        <span>🚩</span>
+        Quests
+    </button>
+
+    <button onclick="page('boost')">
+        <span>⭐</span>
+        Boost
+    </button>
+
+    <button onclick="page('friends')">
+        <span>👥</span>
+        Friends
+    </button>
+
+    <button onclick="page('game')">
+        <span>🎮</span>
+        Game
+    </button>
+
+    <button onclick="page('profile')">
+        <span>⚙️</span>
+        Profile
+    </button>
+
+</div>
+
+
+<script>
+
+const tg = window.Telegram.WebApp;
+
+tg.ready();
+tg.expand();
+
+
+let pending = 0;
+
+let walletBalance =
+    Number(localStorage.getItem("walletBalance")) || 0;
+
+
+/*
+   Automatic virtual-point accumulation.
+   This is a demo/virtual balance, not real crypto mining.
+*/
+
+const miningRate = 0.2067;
+
+setInterval(function(){
+
+    pending += miningRate;
+
+    document.getElementById("earning").innerText =
+        pending.toFixed(4);
+
+},1000);
+
+
+function claim(){
+
+    walletBalance += pending;
+
+    pending = 0;
+
+    localStorage.setItem(
+        "walletBalance",
+        walletBalance
+    );
+
+    document.getElementById("wallet").innerText =
+        walletBalance.toFixed(4);
+
+    document.getElementById("earning").innerText =
+        "0.0000";
+
+    if(tg.HapticFeedback){
+
+        tg.HapticFeedback
+          .impactOccurred("medium");
+
+    }
+
+}
+
+
+function page(name){
+
+    alert(
+        name.toUpperCase() +
+        " page will open here."
+    );
+
+}
+
+</script>
+
+</body>
+    </html>

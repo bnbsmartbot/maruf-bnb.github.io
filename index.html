@@ -357,11 +357,11 @@
 
       <div id="balance">000000000</div>
 
-      <div class="unit">BNB</div>
+      <div class="unit">POINTS</div>
 
       <div id="status" class="status">
         <span class="dot"></span>
-        <span id="statusText">Tap the coin to start mining</span>
+        <span id="statusText">Mining not started</span>
       </div>
     </div>
 
@@ -374,7 +374,7 @@
           viewBox="0 0 100 100"
           xmlns="http://www.w3.org/2000/svg"
         >
-          <g fill="#ffffff">
+          <g fill="#111827">
             <path d="M50 5L63 18L50 31L37 18Z"/>
             <path d="M29 26L42 39L29 52L16 39Z"/>
             <path d="M71 26L84 39L71 52L58 39Z"/>
@@ -383,16 +383,6 @@
             <path d="M29 55L42 68L29 81L16 68Z"/>
             <path d="M71 55L84 68L71 81L58 68Z"/>
           </g>
-
-          <path
-            d="M50 24L68 42L50 60L32 42L50 24Z"
-            fill="#FACC15"
-          />
-
-          <path
-            d="M50 34L58 42L50 50L42 42L50 34Z"
-            fill="#ffffff"
-          />
         </svg>
 
       </button>
@@ -400,8 +390,8 @@
       <div class="tap-title">TAP TO EARN +1 POINT</div>
 
       <div class="tap-info">
-        After your first tap, the number increases one by one.
-        Auto Mining gives +5 points per second.
+        After your first tap, mining continues automatically.
+        Auto Mining gives +5 points per second, even while the app is closed.
       </div>
     </div>
 
@@ -470,8 +460,8 @@
     </div>
 
     <div class="footer">
-      This is a demo mining interface.
-      Real BNB withdrawal requires backend and blockchain integration.
+      Demo interface only. Real BNB withdrawal requires a secure backend
+      and blockchain integration.
     </div>
 
   </div>
@@ -479,12 +469,17 @@
   <div id="toast"></div>
 
   <script>
-    const BALANCE_KEY = "bnb_balance_v5";
-    const MINING_KEY = "bnb_mining_started_v5";
-    const HISTORY_KEY = "bnb_withdraw_history_v5";
+    const BALANCE_KEY = "bnb_offline_balance_v10";
+    const MINING_KEY = "bnb_offline_mining_v10";
+    const LAST_TIME_KEY = "bnb_offline_last_time_v10";
+    const HISTORY_KEY = "bnb_offline_history_v10";
+
+    const MINING_RATE_PER_SECOND = 5;
+    const MAX_OFFLINE_SECONDS = 86400;
 
     let balance = 0;
     let miningStarted = false;
+    let lastMiningTime = 0;
     let miningTimer = null;
     let toastTimer = null;
 
@@ -522,23 +517,59 @@
     function saveData() {
       localStorage.setItem(BALANCE_KEY, String(balance));
       localStorage.setItem(MINING_KEY, String(miningStarted));
+      localStorage.setItem(LAST_TIME_KEY, String(Date.now()));
+    }
+
+    function calculateOfflineMining() {
+      if (!miningStarted || !lastMiningTime) {
+        return 0;
+      }
+
+      const now = Date.now();
+      let elapsedSeconds = Math.floor((now - lastMiningTime) / 1000);
+
+      if (elapsedSeconds < 0) {
+        elapsedSeconds = 0;
+      }
+
+      if (elapsedSeconds > MAX_OFFLINE_SECONDS) {
+        elapsedSeconds = MAX_OFFLINE_SECONDS;
+      }
+
+      return elapsedSeconds * MINING_RATE_PER_SECOND;
     }
 
     function loadData() {
       const savedBalance = localStorage.getItem(BALANCE_KEY);
       const savedMining = localStorage.getItem(MINING_KEY);
+      const savedLastTime = localStorage.getItem(LAST_TIME_KEY);
 
       if (savedBalance !== null) {
         balance = Math.max(0, Number(savedBalance) || 0);
       }
 
       miningStarted = savedMining === "true";
+      lastMiningTime = Number(savedLastTime) || 0;
+
+      if (miningStarted && lastMiningTime > 0) {
+        const offlinePoints = calculateOfflineMining();
+
+        if (offlinePoints > 0) {
+          balance += offlinePoints;
+          showToast("Offline mining added +" + offlinePoints + " points");
+        }
+      }
 
       updateBalance();
 
       if (miningStarted) {
         startMining();
+      } else {
+        status.classList.remove("active");
+        statusText.textContent = "Mining not started";
       }
+
+      saveData();
     }
 
     function startMining() {
@@ -547,14 +578,15 @@
       }
 
       miningStarted = true;
+      lastMiningTime = Date.now();
 
       status.classList.add("active");
       statusText.textContent = "Mining active: +5 points per second";
 
       /*
-        প্রতি ২০০ মিলিসেকেন্ডে ১ পয়েন্ট।
-        ১ সেকেন্ডে ৫ বার।
-        তাই সংখ্যা হবে ১, ২, ৩, ৪, ৫, ৬ এভাবে।
+        প্রতি ২০০ মিলিসেকেন্ডে ১ পয়েন্ট।
+        ফলে স্ক্রিনে ১, ২, ৩, ৪, ৫ এভাবে সংখ্যা বাড়বে।
+        মোট ১ সেকেন্ডে ৫ পয়েন্ট হবে।
       */
 
       miningTimer = setInterval(() => {
@@ -695,9 +727,27 @@
       showToast("Withdrawal request moved to pending");
     });
 
+    document.addEventListener("visibilitychange", () => {
+      if (document.visibilityState === "visible" && miningStarted) {
+        const offlinePoints = calculateOfflineMining();
+
+        if (offlinePoints > 0) {
+          balance += offlinePoints;
+          updateBalance();
+          showToast("Mining updated +" + offlinePoints + " points");
+        }
+
+        saveData();
+      }
+    });
+
+    window.addEventListener("beforeunload", () => {
+      saveData();
+    });
+
     loadData();
     renderHistory();
   </script>
 
 </body>
-    </html>
+  </html>

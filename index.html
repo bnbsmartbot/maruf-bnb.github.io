@@ -10,6 +10,7 @@
       box-sizing: border-box;
       margin: 0;
       padding: 0;
+      -webkit-tap-highlight-color: transparent;
     }
 
     body {
@@ -21,30 +22,33 @@
     }
 
     .app {
+      width: 100%;
       max-width: 520px;
       margin: auto;
     }
 
-    h1 {
+    .header {
       text-align: center;
-      font-size: 29px;
-      font-weight: 900;
-      margin: 10px 0;
+      margin: 10px 0 20px;
     }
 
-    .subtitle {
-      text-align: center;
+    .header h1 {
+      font-size: 29px;
+      font-weight: 900;
+    }
+
+    .header p {
       color: #6b7280;
       font-size: 13px;
-      margin-bottom: 20px;
+      margin-top: 8px;
     }
 
     .card {
-      background: white;
+      background: #ffffff;
       border-radius: 24px;
       padding: 23px;
       margin-bottom: 18px;
-      box-shadow: 0 10px 28px rgba(0,0,0,0.09);
+      box-shadow: 0 10px 28px rgba(0, 0, 0, 0.09);
     }
 
     .balance-card {
@@ -75,8 +79,8 @@
 
     .status {
       display: inline-flex;
-      gap: 8px;
       align-items: center;
+      gap: 8px;
       margin-top: 15px;
       padding: 9px 14px;
       border-radius: 30px;
@@ -117,12 +121,18 @@
       align-items: center;
       justify-content: center;
       margin: 10px auto 25px;
-      background: radial-gradient(circle at 30% 20%, #fffbd0, #facc15 55%, #eab308);
+      background: radial-gradient(
+        circle at 30% 20%,
+        #fffbd0,
+        #facc15 55%,
+        #eab308
+      );
       box-shadow:
-        0 0 0 12px rgba(250,204,21,0.15),
-        0 0 0 24px rgba(250,204,21,0.08),
-        0 18px 30px rgba(161,98,7,0.25);
+        0 0 0 12px rgba(250, 204, 21, 0.15),
+        0 0 0 24px rgba(250, 204, 21, 0.08),
+        0 18px 30px rgba(161, 98, 7, 0.25);
       transition: transform 0.12s;
+      touch-action: manipulation;
     }
 
     #coinButton:active {
@@ -337,12 +347,16 @@
 
   <div class="app">
 
-    <h1>BNB SMART CHAIN</h1>
-    <div class="subtitle">Tap the coin and start your mining journey</div>
+    <div class="header">
+      <h1>BNB SMART CHAIN</h1>
+      <p>Tap the coin and start your mining journey</p>
+    </div>
 
     <div class="card balance-card">
       <div class="label">YOUR TOTAL BALANCE</div>
+
       <div id="balance">000000000</div>
+
       <div class="unit">BNB</div>
 
       <div id="status" class="status">
@@ -353,7 +367,7 @@
 
     <div class="card coin-area">
 
-      <button id="coinButton">
+      <button id="coinButton" aria-label="Tap BNB coin">
 
         <svg
           class="bnb-logo"
@@ -383,11 +397,11 @@
 
       </button>
 
-      <div class="tap-title">TAP TO EARN +1</div>
+      <div class="tap-title">TAP TO EARN +1 POINT</div>
 
       <div class="tap-info">
-        After your first tap, the balance increases one by one.
-        Total mining speed is 5 points per second.
+        After your first tap, the number increases one by one.
+        Auto Mining gives +5 points per second.
       </div>
     </div>
 
@@ -539,8 +553,8 @@
 
       /*
         প্রতি ২০০ মিলিসেকেন্ডে ১ পয়েন্ট।
-        ১ সেকেন্ডে ৫ বার হবে।
-        তাই স্ক্রিনে ১, ২, ৩, ৪, ৫ এভাবে দেখাবে।
+        ১ সেকেন্ডে ৫ বার।
+        তাই সংখ্যা হবে ১, ২, ৩, ৪, ৫, ৬ এভাবে।
       */
 
       miningTimer = setInterval(() => {
@@ -572,6 +586,7 @@
       try {
         if (navigator.clipboard) {
           await navigator.clipboard.writeText(text);
+
           copyBtn.textContent = "COPIED";
           showToast("Referral link copied");
 
@@ -685,4 +700,4 @@
   </script>
 
 </body>
-  </html>
+    </html>

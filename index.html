@@ -1,287 +1,946 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0, maximum-scale=1.0"
+  />
 
-    font-size:14px;
-}
+  <title>BNB SMART CHAIN</title>
 
-.rate{
-    font-size:25px;
-    font-weight:bold;
-    margin-top:8px;
-}
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: Arial, Helvetica, sans-serif;
+      -webkit-tap-highlight-color: transparent;
+    }
 
-.rank{
-    font-size:22px;
-    font-weight:bold;
-    margin-top:8px;
-}
+    :root {
+      --yellow: #f3ba2f;
+      --yellow-light: #ffe38a;
+      --bg: #070d1b;
+      --card: rgba(20, 32, 61, 0.95);
+      --text-muted: #91a0c0;
+      --green: #42e99a;
+      --border: rgba(255, 255, 255, 0.09);
+    }
 
-.boost{
-    border-top:1px solid #334650;
-    margin-top:20px;
-    padding-top:20px;
-    color:#a8aeb3;
-}
+    body {
+      min-height: 100vh;
+      color: #fff;
+      background:
+        radial-gradient(
+          circle at 10% 0%,
+          rgba(42, 68, 137, 0.7),
+          transparent 32%
+        ),
+        radial-gradient(
+          circle at 100% 100%,
+          rgba(85, 42, 126, 0.55),
+          transparent 35%
+        ),
+        linear-gradient(135deg, #050a15, #101a34 50%, #070c18);
+      padding: 14px;
+      overflow-x: hidden;
+    }
 
-.wallet{
-    text-align:center;
-    margin-top:45px;
-}
+    button,
+    input {
+      font: inherit;
+    }
 
-.wallet-name{
-    display:inline-block;
-    padding:13px 30px;
-    border-radius:30px;
-    background:#183d38;
-    border:1px solid #3e7166;
-    font-size:20px;
-    font-weight:bold;
-}
+    button {
+      cursor: pointer;
+    }
 
-.balance{
-    color:#fff;
-    font-size:20px;
-    margin-top:8px;
-}
+    .app {
+      width: 100%;
+      max-width: 560px;
+      margin: auto;
+    }
 
-.coin{
-    width:230px;
-    height:230px;
-    margin:60px auto 20px;
-    border-radius:50%;
-    background:linear-gradient(145deg,#ffd75a,#b67800);
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    font-size:70px;
-    box-shadow:0 0 45px rgba(255,190,30,.25);
-}
+    .topbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 20px;
+    }
 
-.earning{
-    text-align:center;
-    font-size:52px;
-    font-weight:bold;
-    margin:20px 0 35px;
-}
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 11px;
+      min-width: 0;
+    }
 
-.claim{
-    width:100%;
-    padding:22px;
-    border:0;
-    border-radius:25px;
-    background:#1189df;
-    color:white;
-    font-size:25px;
-    font-weight:bold;
-}
+    .brand-logo {
+      width: 48px;
+      height: 48px;
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #151515;
+      background: linear-gradient(
+        145deg,
+        #ffe58a,
+        #f3ba2f,
+        #c48613
+      );
+      border-radius: 50%;
+      font-size: 26px;
+      font-weight: 900;
+      box-shadow:
+        0 0 25px rgba(243, 186, 47, 0.3),
+        inset 0 4px 8px rgba(255, 255, 255, 0.4);
+    }
 
-.claim:active{
-    transform:scale(.98);
-}
+    .brand-title {
+      font-size: 18px;
+      font-weight: 900;
+      letter-spacing: 0.4px;
+      white-space: nowrap;
+    }
 
-.nav{
-    position:fixed;
-    bottom:0;
-    left:0;
-    right:0;
-    display:flex;
-    justify-content:space-around;
-    background:rgba(8,23,30,.97);
-    padding:12px 5px;
-    border-top:1px solid #263b44;
-}
+    .brand-subtitle {
+      margin-top: 5px;
+      color: var(--text-muted);
+      font-size: 11px;
+    }
 
-.nav button{
-    background:none;
-    border:0;
-    color:#aaa;
-    font-size:12px;
-}
+    .online-badge {
+      flex-shrink: 0;
+      color: var(--green);
+      background: rgba(66, 233, 154, 0.1);
+      border: 1px solid rgba(66, 233, 154, 0.25);
+      border-radius: 30px;
+      padding: 8px 11px;
+      font-size: 10px;
+      font-weight: bold;
+    }
 
-.nav span{
-    display:block;
-    font-size:25px;
-    margin-bottom:4px;
-}
+    .card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 24px;
+      box-shadow: 0 18px 50px rgba(0, 0, 0, 0.23);
+    }
 
-.nav .active{
-    color:#1599ff;
-}
+    .balance-card {
+      text-align: center;
+      padding: 28px 17px;
+      margin-bottom: 20px;
+    }
 
-</style>
+    .balance-label {
+      color: var(--text-muted);
+      font-size: 13px;
+      margin-bottom: 14px;
+    }
+
+    .balance {
+      color: #fff;
+      font-size: 43px;
+      line-height: 1.2;
+      font-weight: 900;
+      letter-spacing: 2px;
+      overflow-wrap: anywhere;
+      text-shadow: 0 0 20px rgba(255, 255, 255, 0.08);
+    }
+
+    .balance-unit {
+      color: var(--yellow);
+      font-size: 18px;
+      letter-spacing: 0;
+      margin-left: 5px;
+    }
+
+    .mining-badge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 7px;
+      margin-top: 17px;
+      padding: 10px 15px;
+      border-radius: 30px;
+      color: #ffcf55;
+      background: rgba(243, 186, 47, 0.1);
+      border: 1px solid rgba(243, 186, 47, 0.25);
+      font-size: 12px;
+      font-weight: bold;
+    }
+
+    .mining-badge.active {
+      color: var(--green);
+      background: rgba(66, 233, 154, 0.1);
+      border-color: rgba(66, 233, 154, 0.25);
+    }
+
+    .coin-section {
+      text-align: center;
+      padding: 14px 0 28px;
+    }
+
+    .coin-button {
+      position: relative;
+      width: 235px;
+      height: 235px;
+      border: none;
+      border-radius: 50%;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      background:
+        radial-gradient(
+          circle at 32% 20%,
+          #fff0a5 0%,
+          #fbd65d 23%,
+          #f3ba2f 48%,
+          #d79619 76%,
+          #98630d 100%
+        );
+      box-shadow:
+        0 0 0 10px rgba(243, 186, 47, 0.06),
+        0 0 0 20px rgba(243, 186, 47, 0.035),
+        0 25px 55px rgba(0, 0, 0, 0.45),
+        inset 0 6px 15px rgba(255, 255, 255, 0.5),
+        inset 0 -15px 25px rgba(94, 51, 0, 0.4);
+      transition: transform 0.12s ease;
+      user-select: none;
+    }
+
+    .coin-button:active {
+      transform: scale(0.91);
+    }
+
+    .coin-button::before {
+      content: "";
+      position: absolute;
+      inset: 14px;
+      border-radius: 50%;
+      border: 2px solid rgba(255, 255, 255, 0.42);
+    }
+
+    .coin-button::after {
+      content: "";
+      position: absolute;
+      inset: 24px;
+      border-radius: 50%;
+      border: 1px solid rgba(86, 49, 0, 0.35);
+    }
+
+    .bnb-logo {
+      position: relative;
+      width: 116px;
+      height: 116px;
+      transform: rotate(45deg);
+      z-index: 2;
+    }
+
+    .diamond {
+      position: absolute;
+      background: #171717;
+      border-radius: 4px;
+    }
+
+    .diamond-center {
+      width: 35px;
+      height: 35px;
+      top: 40px;
+      left: 40px;
+    }
+
+    .diamond-top {
+      width: 25px;
+      height: 25px;
+      top: 6px;
+      left: 45px;
+    }
+
+    .diamond-bottom {
+      width: 25px;
+      height: 25px;
+      bottom: 6px;
+      left: 45px;
+    }
+
+    .diamond-left {
+      width: 25px;
+      height: 25px;
+      top: 45px;
+      left: 6px;
+    }
+
+    .diamond-right {
+      width: 25px;
+      height: 25px;
+      top: 45px;
+      right: 6px;
+    }
+
+    .coin-help {
+      color: #a5b3cf;
+      font-size: 13px;
+      margin-top: 24px;
+    }
+
+    .coin-help strong {
+      color: var(--yellow);
+    }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 13px;
+      margin-bottom: 20px;
+    }
+
+    .stat-card {
+      padding: 18px;
+      border-radius: 19px;
+      background: var(--card);
+      border: 1px solid var(--border);
+    }
+
+    .stat-label {
+      color: var(--text-muted);
+      font-size: 12px;
+      margin-bottom: 10px;
+    }
+
+    .stat-value {
+      color: #fff;
+      font-size: 24px;
+      font-weight: 900;
+    }
+
+    .stat-value.yellow {
+      color: var(--yellow);
+    }
+
+    .panel {
+      padding: 21px;
+      margin-bottom: 19px;
+    }
+
+    .panel-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      margin-bottom: 18px;
+    }
+
+    .panel-header h2 {
+      font-size: 18px;
+    }
+
+    .panel-header span {
+      color: var(--yellow);
+      font-size: 11px;
+      font-weight: bold;
+    }
+
+    .form-group {
+      margin-bottom: 14px;
+    }
+
+    .form-group label {
+      display: block;
+      color: #a7b5d0;
+      font-size: 12px;
+      margin-bottom: 8px;
+    }
+
+    .form-group input {
+      width: 100%;
+      color: white;
+      background: rgba(4, 10, 23, 0.85);
+      border: 1px solid rgba(255, 255, 255, 0.13);
+      border-radius: 13px;
+      padding: 15px;
+      outline: none;
+      font-size: 14px;
+    }
+
+    .form-group input:focus {
+      border-color: var(--yellow);
+      box-shadow: 0 0 0 3px rgba(243, 186, 47, 0.08);
+    }
+
+    .main-button {
+      width: 100%;
+      border: none;
+      border-radius: 13px;
+      padding: 16px;
+      font-size: 14px;
+      font-weight: 900;
+      transition: 0.2s;
+    }
+
+    .main-button:active {
+      transform: scale(0.98);
+    }
+
+    .withdraw-button {
+      color: #161616;
+      background: linear-gradient(
+        135deg,
+        #ffe184,
+        #f3ba2f,
+        #d99b1c
+      );
+      box-shadow: 0 8px 23px rgba(243, 186, 47, 0.18);
+    }
+
+    .referral-panel {
+      padding: 21px;
+      margin-bottom: 19px;
+      border-radius: 24px;
+      background:
+        linear-gradient(
+          135deg,
+          rgba(77, 57, 130, 0.9),
+          rgba(27, 42, 81, 0.95)
+        );
+      border: 1px solid rgba(173, 139, 255, 0.22);
+    }
+
+    .referral-panel h2 {
+      font-size: 18px;
+      margin-bottom: 9px;
+    }
+
+    .referral-panel p {
+      color: #c1cbe0;
+      font-size: 12px;
+      line-height: 1.7;
+      margin-bottom: 15px;
+    }
+
+    .referral-link {
+      width: 100%;
+      padding: 14px;
+      color: white;
+      background: rgba(0, 0, 0, 0.25);
+      border: 1px solid rgba(255, 255, 255, 0.13);
+      border-radius: 12px;
+      font-size: 11px;
+      overflow-wrap: anywhere;
+      margin-bottom: 11px;
+    }
+
+    .copy-button {
+      color: white;
+      background: linear-gradient(135deg, #8067e9, #6044bd);
+    }
+
+    .history-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      padding: 15px 0;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+    }
+
+    .history-item:last-child {
+      border-bottom: none;
+    }
+
+    .history-left {
+      display: flex;
+      align-items: center;
+      gap: 11px;
+      min-width: 0;
+    }
+
+    .history-icon {
+      width: 41px;
+      height: 41px;
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--yellow);
+      background: rgba(243, 186, 47, 0.12);
+      border-radius: 13px;
+      font-size: 20px;
+    }
+
+    .history-name {
+      color: white;
+      font-size: 13px;
+      font-weight: bold;
+    }
+
+    .history-date {
+      color: #8190ae;
+      font-size: 10px;
+      margin-top: 5px;
+    }
+
+    .history-right {
+      text-align: right;
+      flex-shrink: 0;
+    }
+
+    .history-amount {
+      color: var(--yellow);
+      font-size: 12px;
+      font-weight: bold;
+    }
+
+    .pending {
+      display: inline-block;
+      margin-top: 5px;
+      padding: 4px 8px;
+      color: #ffcf55;
+      background: rgba(243, 186, 47, 0.1);
+      border: 1px solid rgba(243, 186, 47, 0.2);
+      border-radius: 20px;
+      font-size: 9px;
+      font-weight: bold;
+    }
+
+    .empty-history {
+      color: #8190ae;
+      text-align: center;
+      padding: 20px 0;
+      font-size: 12px;
+    }
+
+    .footer {
+      color: #687895;
+      text-align: center;
+      font-size: 10px;
+      line-height: 1.7;
+      padding: 5px 15px 20px;
+    }
+
+    .toast {
+      position: fixed;
+      z-index: 9999;
+      left: 50%;
+      bottom: 25px;
+      max-width: 90%;
+      padding: 14px 19px;
+      color: white;
+      background: #202d4b;
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      border-radius: 30px;
+      text-align: center;
+      font-size: 12px;
+      opacity: 0;
+      pointer-events: none;
+      transform: translateX(-50%) translateY(100px);
+      transition: 0.3s ease;
+    }
+
+    .toast.show {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+    }
+
+    @media (max-width: 390px) {
+      body {
+        padding: 11px;
+      }
+
+      .brand-title {
+        font-size: 15px;
+      }
+
+      .brand-logo {
+        width: 42px;
+        height: 42px;
+        font-size: 23px;
+      }
+
+      .online-badge {
+        font-size: 9px;
+        padding: 7px 8px;
+      }
+
+      .balance {
+        font-size: 30px;
+        letter-spacing: 1px;
+      }
+
+      .coin-button {
+        width: 195px;
+        height: 195px;
+      }
+
+      .bnb-logo {
+        transform: rotate(45deg) scale(0.84);
+      }
+
+      .panel,
+      .referral-panel {
+        padding: 17px;
+      }
+    }
+  </style>
 </head>
 
 <body>
+  <main class="app">
 
-<div class="top">
-
-    <button class="close">✕ Close</button>
-
-    <button class="menu">⋮</button>
-
-</div>
-
-
-<div class="stats">
-
-    <div class="stats-row">
+    <header class="topbar">
+      <div class="brand">
+        <div class="brand-logo">◆</div>
 
         <div>
-            <div class="label">MINING RATE</div>
-            <div class="rate">
-                🔥 <span id="rate">0.2067</span> P/s
-            </div>
+          <div class="brand-title">BNB SMART CHAIN</div>
+          <div class="brand-subtitle">
+            Mining & Rewards Platform
+          </div>
         </div>
+      </div>
 
-        <div style="text-align:right">
+      <div class="online-badge">● ONLINE</div>
+    </header>
 
-            <div class="label">CURRENT RANK</div>
+    <section class="card balance-card">
+      <div class="balance-label">
+        Your Total Balance
+      </div>
 
-            <div class="rank">
-                Level <span id="level">1</span> 👑
-            </div>
+      <div class="balance" id="balance">
+        000000000
+      </div>
 
+      <div class="mining-badge" id="miningStatus">
+        ⏸ Mining not started
+      </div>
+    </section>
+
+    <section class="coin-section">
+      <button
+        class="coin-button"
+        id="coinButton"
+        aria-label="Tap BNB coin to earn points"
+      >
+        <div class="bnb-logo">
+          <div class="diamond diamond-center"></div>
+          <div class="diamond diamond-top"></div>
+          <div class="diamond diamond-bottom"></div>
+          <div class="diamond diamond-left"></div>
+          <div class="diamond diamond-right"></div>
         </div>
+      </button>
 
+      <div class="coin-help">
+        Tap the coin to earn <strong>+1 Point</strong>
+      </div>
+    </section>
+
+    <section class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-label">Auto Mining</div>
+        <div class="stat-value yellow">+2/sec</div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-label">Tap Reward</div>
+        <div class="stat-value">+1</div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-label">Total Taps</div>
+        <div class="stat-value" id="totalTaps">0</div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-label">Referrals</div>
+        <div class="stat-value" id="referralCount">0</div>
+      </div>
+    </section>
+
+    <section class="card panel">
+      <div class="panel-header">
+        <h2>Withdraw BNB</h2>
+        <span>Minimum 1</span>
+      </div>
+
+      <div class="form-group">
+        <label for="walletAddress">
+          BNB Wallet Address
+        </label>
+
+        <input
+          type="text"
+          id="walletAddress"
+          placeholder="Enter your BNB wallet address"
+        />
+      </div>
+
+      <div class="form-group">
+        <label for="withdrawAmount">
+          Withdraw Amount
+        </label>
+
+        <input
+          type="number"
+          id="withdrawAmount"
+          min="1"
+          step="1"
+          placeholder="Minimum 1"
+        />
+      </div>
+
+      <button
+        class="main-button withdraw-button"
+        id="withdrawButton"
+      >
+        Withdraw BNB
+      </button>
+    </section>
+
+    <section class="referral-panel">
+      <h2>Invite Friends & Earn</h2>
+
+      <p>
+        Invite friends and earn $0.50 per referral.
+        Share your referral link with your friends.
+      </p>
+
+      <div class="referral-link" id="referralLink">
+        https://t.me/BnbSmartWallet_Bot?start=ref_demo_user
+      </div>
+
+      <button
+        class="main-button copy-button"
+        id="copyButton"
+      >
+        Copy Referral Link
+      </button>
+    </section>
+
+    <section class="card panel">
+      <div class="panel-header">
+        <h2>Withdrawal History</h2>
+        <span id="historyCount">0 Records</span>
+      </div>
+
+      <div id="historyList">
+        <div class="empty-history">
+          No withdrawal history yet
+        </div>
+      </div>
+    </section>
+
+    <div class="footer">
+      Demo version only. Points and withdrawal records are stored
+      locally in your browser. Real BNB withdrawals require a secure
+      backend and blockchain integration.
     </div>
 
+  </main>
 
-    <div class="boost">
+  <div class="toast" id="toast"></div>
 
-        ⚡ Boost Bank
+  <script>
+    /*
+      IMPORTANT:
+      This version intentionally clears the old saved balance once,
+      so the app starts from zero instead of showing old 100 points.
+    */
 
-        <span style="float:right">
-            <b>0h / 12h</b>
-        </span>
+    const RESET_OLD_DATA_ONCE = "bnb_smart_chain_reset_v3";
 
-    </div>
-
-</div>
-
-
-<div class="wallet">
-
-    <div class="wallet-name">
-        👛 
-</div>
-
-
-<div class="earning">
-
-    +<span id="earning">0.0000</span>
-
-</div>
-
-
-<button class="claim" onclick="claim()">
-    Claim
-</button>
-
-
-<div style="height:100px"></div>
-
-
-<div class="nav">
-
-    <button class="active" onclick="page('mine')">
-        <span>🏠</span>
-        Mine
-    </button>
-
-    <button onclick="page('quests')">
-        <span>🚩</span>
-        Quests
-    </button>
-
-    <button onclick="page('boost')">
-        <span>⭐</span>
-        Boost
-    </button>
-
-    <button onclick="page('friends')">
-        <span>👥</span>
-        Friends
-    </button>
-
-    <button onclick="page('game')">
-        <span>🎮</span>
-        Game
-    </button>
-
-    <button onclick="page('profile')">
-        <span>⚙️</span>
-        Profile
-    </button>
-
-</div>
-
-
-<script>
-
-const tg = window.Telegram.WebApp;
-
-tg.ready();
-tg.expand();
-
-
-let pending = 0;
-
-let walletBalance =
-    Number(localStorage.getItem("walletBalance")) || 0;
-
-
-/*
-   Automatic virtual-point accumulation.
-   This is a demo/virtual balance, not real crypto mining.
-*/
-
-const miningRate = 0.2067;
-
-setInterval(function(){
-
-    pending += miningRate;
-
-    document.getElementById("earning").innerText =
-        pending.toFixed(4);
-
-},1000);
-
-
-function claim(){
-
-    walletBalance += pending;
-
-    pending = 0;
-
-    localStorage.setItem(
-        "walletBalance",
-        walletBalance
-    );
-
-    document.getElementById("wallet").innerText =
-        walletBalance.toFixed(4);
-
-    document.getElementById("earning").innerText =
-        "0.0000";
-
-    if(tg.HapticFeedback){
-
-        tg.HapticFeedback
-          .impactOccurred("medium");
-
+    if (!localStorage.getItem(RESET_OLD_DATA_ONCE)) {
+      localStorage.removeItem("bnbSmartChainData");
+      localStorage.setItem(RESET_OLD_DATA_ONCE, "done");
     }
 
-}
+    let balance = 0;
+    let totalTaps = 0;
+    let referralCount = 0;
+    let miningStarted = false;
+    let withdrawalHistory = [];
 
+    const tapReward = 1;
+    const miningSpeed = 2;
 
-function page(name){
+    const balanceElement =
+      document.getElementById("balance");
 
-    alert(
-        name.toUpperCase() +
-        " page will open here."
-    );
+    const coinButton =
+      document.getElementById("coinButton");
 
-}
+    const totalTapsElement =
+      document.getElementById("totalTaps");
 
-</script>
+    const referralCountElement =
+      document.getElementById("referralCount");
 
-</body>
-    </html
+    const miningStatusElement =
+      document.getElementById("miningStatus");
+
+    const walletAddressInput =
+      document.getElementById("walletAddress");
+
+    const withdrawAmountInput =
+      document.getElementById("withdrawAmount");
+
+    const withdrawButton =
+      document.getElementById("withdrawButton");
+
+    const referralLinkElement =
+      document.getElementById("referralLink");
+
+    const copyButton =
+      document.getElementById("copyButton");
+
+    const historyList =
+      document.getElementById("historyList");
+
+    const historyCount =
+      document.getElementById("historyCount");
+
+    const toast =
+      document.getElementById("toast");
+
+    function formatNumber(number) {
+      return String(Math.floor(Number(number) || 0))
+        .padStart(9, "0");
+    }
+
+    function updateBalance() {
+      balanceElement.textContent =
+        formatNumber(balance);
+    }
+
+    function updateMiningStatus() {
+      if (miningStarted) {
+        miningStatusElement.textContent =
+          "⚡ Mining active +2 per second";
+
+        miningStatusElement.classList.add("active");
+      } else {
+        miningStatusElement.textContent =
+          "⏸ Mining not started";
+
+        miningStatusElement.classList.remove("active");
+      }
+    }
+
+    function showToast(message) {
+      toast.textContent = message;
+      toast.classList.add("show");
+
+      setTimeout(() => {
+        toast.classList.remove("show");
+      }, 2500);
+    }
+
+    function saveData() {
+      const data = {
+        balance: balance,
+        totalTaps: totalTaps,
+        referralCount: referralCount,
+        miningStarted: miningStarted,
+        withdrawalHistory: withdrawalHistory
+      };
+
+      localStorage.setItem(
+        "bnbSmartChainData",
+        JSON.stringify(data)
+      );
+    }
+
+    function loadData() {
+      const saved =
+        localStorage.getItem("bnbSmartChainData");
+
+      if (!saved) {
+        updateBalance();
+        updateMiningStatus();
+        return;
+      }
+
+      try {
+        const data = JSON.parse(saved);
+
+        balance = Number(data.balance) || 0;
+        totalTaps = Number(data.totalTaps) || 0;
+        referralCount = Number(data.referralCount) || 0;
+        miningStarted = Boolean(data.miningStarted);
+
+        withdrawalHistory =
+          Array.isArray(data.withdrawalHistory)
+            ? data.withdrawalHistory
+            : [];
+
+        updateBalance();
+        updateMiningStatus();
+
+        totalTapsElement.textContent =
+          totalTaps;
+
+        referralCountElement.textContent =
+          referralCount;
+
+        renderHistory();
+      } catch (error) {
+        balance = 0;
+        totalTaps = 0;
+        referralCount = 0;
+        miningStarted = false;
+        withdrawalHistory = [];
+
+        updateBalance();
+        updateMiningStatus();
+      }
+    }
+
+    function renderHistory() {
+      historyCount.textContent =
+        withdrawalHistory.length + " Records";
+
+      if (withdrawalHistory.length === 0) {
+        historyList.innerHTML = `
+          <div class="empty-history">
+            No withdrawal history yet
+          </div>
+        `;
+
+        return;
+      }
+
+      historyList.innerHTML = "";
+
+      withdrawalHistory.forEach((item) => {
+        const row =
+          document.createElement("div");
+
+        row.className = "history-item";
+
+        row.innerHTML = `
+          <div class="history-left">
+            <div class="history-icon">↗</div>
+
+            <div>
+              <div class="history-name">
+                BNB Withdrawal
+              </div>
+
+              <div class="history-date">
+                ${item.date}
+              </div>
+            </div>
+          </div>
+
+          <div class="history-right">
+            <div class="history-amount">
+              -${formatNumber(item.amount)}
+            </div>
+
+            <div class="pending">
+          
